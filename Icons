@@ -1,0 +1,50 @@
+import { VStack, Input, Button, IconButton, Icon, Text, Flex, Box, Checkbox } from "@chakra-ui/react";
+import { FaPlus, FaTrash } from "react-icons/fa";
+
+const Index = () => {
+  const [todos, setTodos] = React.useState([]);
+  const [newTodo, setNewTodo] = React.useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (newTodo !== "") {
+      setTodos([...todos, { text: newTodo, completed: false }]);
+      setNewTodo("");
+    }
+  };
+
+  const handleDelete = (index) => {
+    setTodos(todos.filter((todo, i) => i !== index));
+  };
+
+  const handleToggle = (index) => {
+    setTodos(
+      todos.map((todo, i) => {
+        if (i === index) {
+          return { ...todo, completed: !todo.completed };
+        }
+        return todo;
+      }),
+    );
+  };
+
+  return (
+    <VStack p={4} spacing={4}>
+      <Flex justify="space-between" align="center">
+        <Input value={newTodo} onChange={(e) => setNewTodo(e.target.value)} placeholder="Add new todo" mr={2} />
+        <IconButton icon={<Icon as={FaPlus} />} colorScheme="teal" variant="solid" onClick={handleSubmit} />
+      </Flex>
+      {todos.map((todo, index) => (
+        <Box key={index} p={2} borderBottom="1px solid #ccc">
+          <Flex justify="space-between" align="center">
+            <Checkbox isChecked={todo.completed} onChange={() => handleToggle(index)} />
+            <Text textDecoration={todo.completed ? "line-through" : "none"}>{todo.text}</Text>
+            <IconButton icon={<Icon as={FaTrash} />} colorScheme="red" variant="solid" onClick={() => handleDelete(index)} />
+          </Flex>
+        </Box>
+      ))}
+    </VStack>
+  );
+};
+
+export default Index;
